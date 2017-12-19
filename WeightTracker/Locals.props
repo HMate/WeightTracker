@@ -8,7 +8,7 @@
   <ItemDefinitionGroup />
   <ItemGroup>
     <BuildMacro Include="SFML_LIB_PATH">
-      <Value>$(SFML_LIB_PATH)</Value>
+      <Value>$(SFML_LIB_PATH)</Value> 
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>

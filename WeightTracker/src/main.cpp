@@ -1,5 +1,7 @@
-
+#include "common.h"
+#include "logger.h"
 #include "filesystem.h"
+#include "string.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
@@ -10,7 +12,7 @@
 
 int main(char argc, char* argv)
 {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "Weight Tacker");
+    sf::RenderWindow window(sf::VideoMode(640, 480), "Weight Tracker");
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
 
@@ -19,9 +21,20 @@ int main(char argc, char* argv)
 
     File weightFile;
     weightFile.loadFile("weights.dtr");
-    std::string line = weightFile.readLine();
-    std::string line2 = weightFile.readLine();
-    std::string line3 = weightFile.readLine();
+    std::string header = weightFile.readLine();
+    while(!weightFile.isEndOfFile())
+    {
+        String line = weightFile.readLine();
+        std::vector<std::string> parts = line.split(",");
+        if(parts.size() >= 2)
+        {
+            std::string date = parts[0];
+            std::string weight = parts[1];
+        }
+        else
+            // TODO: Log error
+            Log::log("Error: less than 2 parts in: %s", line);
+    }
     
     sf::Clock deltaClock;
     while(window.isOpen())

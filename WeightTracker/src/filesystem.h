@@ -1,7 +1,7 @@
-#include "common.h"
+#pragma once
 #include <fstream>
 #include <iostream>
-
+#include "common.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef PLATFORM_WINDOWS
@@ -20,8 +20,9 @@ class File
 public:
     File();
     ~File();
-    void loadFile(std::string filePath);
+    void loadFile(const std::string& filePath);
     std::string readLine();
+    bool isEndOfFile();
 };
 
 class FileSystem

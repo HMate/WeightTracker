@@ -17,8 +17,11 @@ int main(char argc, char* argv)
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
 
-    File weightFile("weights.dtr");
-    std::string weightDataRaw = weightFile.readFile();
+    File weightFile;
+    weightFile.loadFile("weights.dtr");
+    std::string line = weightFile.readLine();
+    std::string line2 = weightFile.readLine();
+    std::string line3 = weightFile.readLine();
     
     sf::Clock deltaClock;
     while(window.isOpen())

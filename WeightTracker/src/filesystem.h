@@ -1,3 +1,4 @@
+#include "common.h"
 #include <fstream>
 #include <iostream>
 
@@ -13,20 +14,19 @@
 
 class File
 {
-    std::string m_filePath;
-    std::fstream m_file;
-    bool m_isOpen = false;
+    std::string m_contents;
+    int64 m_pos;
 
 public:
-    File(std::string filePath);
+    File();
     ~File();
-    std::string readFile();
+    void loadFile(std::string filePath);
+    std::string readLine();
 };
 
 class FileSystem
 {
 public:
     static std::string getCurrentWorkingDirectory();
-    static File openFile(std::string filePath);
 };
 

@@ -1,4 +1,6 @@
 
+#include "filesystem.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui-SFML.h"
 
@@ -14,9 +16,10 @@ int main(char argc, char* argv)
 
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
+
+    File weightFile("weights.dtr");
+    std::string weightDataRaw = weightFile.readFile();
     
-
-
     sf::Clock deltaClock;
     while(window.isOpen())
     {

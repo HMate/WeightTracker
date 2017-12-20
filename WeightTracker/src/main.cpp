@@ -1,3 +1,4 @@
+#define _SCL_SECURE_NO_WARNINGS
 #include "common.h"
 #include "logger.h"
 #include "filesystem.h"
@@ -10,17 +11,10 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-int main(char argc, char* argv)
+void loadWeightFile(const std::string& weightFilePath)
 {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "Weight Tracker");
-    window.setVerticalSyncEnabled(true);
-    ImGui::SFML::Init(window);
-
-    sf::Color bgColor;
-    float color[3] = {0.0f, 0.0f, 0.0f};
-
     File weightFile;
-    weightFile.loadFile("weights.dtr");
+    weightFile.loadFile(weightFilePath);
     std::string header = weightFile.readLine();
     while(!weightFile.isEndOfFile())
     {
@@ -32,9 +26,23 @@ int main(char argc, char* argv)
             std::string weight = parts[1];
         }
         else
-            // TODO: Log error
             Log::log("Error: less than 2 parts in: %s", line);
     }
+}
+
+int main(char argc, char* argv)
+{
+    sf::RenderWindow window(sf::VideoMode(640, 480), "Weight Tracker");
+    window.setVerticalSyncEnabled(true);
+    ImGui::SFML::Init(window);
+
+    sf::Color bgColor;
+    float color[3] = {0.0f, 0.0f, 0.0f};
+
+    char weightFilePath[2048] = "weights.dtr";
+    loadWeightFile(weightFilePath);
+
+    FileSystem::getCurrentWorkingDirectory().copy(weightFilePath, 2048);
     
     sf::Clock deltaClock;
     while(window.isOpen())
@@ -71,9 +79,10 @@ int main(char argc, char* argv)
         ImGui::Begin("Tracker");
         {
             ImGui::SetWindowPos(ImVec2(windowPadding, editorHeight + windowPadding));
-            if(ImGui::Button("Update window title"))
+            ImGui::InputText("Input file", weightFilePath, 2048);
+            if(ImGui::Button("Load file"))
             {
-
+                loadWeightFile(weightFilePath);
             }
         }
         ImGui::End();

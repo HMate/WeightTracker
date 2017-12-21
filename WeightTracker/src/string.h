@@ -87,3 +87,13 @@ public:
         return StringFormatter::format<T...>(result, pargs...);
     }
 };
+
+class StringParser
+{
+public:
+    static bool isUInt32(std::string);
+    static uint32 parseUInt32(std::string);
+
+    static bool isInt32(std::string);
+    static int32 parseInt32(std::string);
+};

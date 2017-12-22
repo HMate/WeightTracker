@@ -1,7 +1,8 @@
-#include "common.h"
+#pragma once
+#include "types.h"
 #include "string.h"
 
-class DateTime
+class COMMON_API DateTime
 {
     // TODO: pack these into single number if necessary
     int32 m_year;

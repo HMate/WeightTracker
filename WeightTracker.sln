@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WeightTracker", "WeightTracker\WeightTracker.vcxproj", "{08B25E86-4F15-4A7A-AD54-F1A4691FDE82}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "Common\Common.vcxproj", "{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{08B25E86-4F15-4A7A-AD54-F1A4691FDE82}.Release|x64.Build.0 = Release|x64
 		{08B25E86-4F15-4A7A-AD54-F1A4691FDE82}.Release|x86.ActiveCfg = Release|Win32
 		{08B25E86-4F15-4A7A-AD54-F1A4691FDE82}.Release|x86.Build.0 = Release|Win32
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Debug|x64.ActiveCfg = Debug|x64
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Debug|x64.Build.0 = Debug|x64
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Debug|x86.ActiveCfg = Debug|Win32
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Debug|x86.Build.0 = Debug|Win32
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Release|x64.ActiveCfg = Release|x64
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Release|x64.Build.0 = Release|x64
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Release|x86.ActiveCfg = Release|Win32
+		{A79D3A9D-5C40-4728-8C56-E7AE0CDEA55D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

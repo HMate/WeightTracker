@@ -3,11 +3,12 @@
 #ifdef PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
+
 #include <string>
 #include "string.h"
 
 
-class Log
+class COMMON_API Log
 {
 public:
     static void log(const std::string& msg)
@@ -15,7 +16,7 @@ public:
         std::string withNewLine(msg);
         withNewLine.append("\n");
 #ifdef PLATFORM_WINDOWS
-        OutputDebugString(withNewLine.c_str());
+        OutputDebugStringA(withNewLine.c_str());
 #endif
     }
 
@@ -26,7 +27,7 @@ public:
         withNewLine.append("\n");
 #ifdef PLATFORM_WINDOWS
         auto res = StringFormatter::format<T>(withNewLine, p0);
-        OutputDebugString(res.c_str());
+        OutputDebugStringA(res.c_str());
 #endif
     }
 
@@ -37,7 +38,7 @@ public:
         withNewLine.append("\n");
 #ifdef PLATFORM_WINDOWS
         auto res = StringFormatter::format<T...>(withNewLine, pargs...);
-        OutputDebugString(res.c_str());
+        OutputDebugStringA(res.c_str());
 #endif
     }
 };

@@ -1,7 +1,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
-#include "common.h"
+#include "types.h"
 
 #include <stdio.h>  /* defines FILENAME_MAX */
 #ifdef PLATFORM_WINDOWS
@@ -12,7 +12,7 @@
 #define GetCurrentDir getcwd
 #endif
 
-class File
+class COMMON_API File
 {
     std::string m_contents;
     int64 m_pos;
@@ -25,7 +25,7 @@ public:
     bool isEndOfFile();
 };
 
-class FileSystem
+class COMMON_API FileSystem
 {
 public:
     static std::string getCurrentWorkingDirectory();

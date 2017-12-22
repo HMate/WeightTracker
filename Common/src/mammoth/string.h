@@ -1,11 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "common.h"
+#include "types.h"
 
 typedef std::vector<std::string> strarray;
 
-class String
+class COMMON_API String
 {
     std::string m_content;
 public:
@@ -18,7 +18,7 @@ public:
 
 
 template<typename T>
-class FormatParam
+class COMMON_API FormatParam
 {
     T m_val;
 public:
@@ -35,7 +35,7 @@ std::string FormatParam<int64>::toString() { return std::to_string(m_val); }
 std::string FormatParam<float>::toString() { return std::to_string(m_val); }
 std::string FormatParam<double>::toString() { return std::to_string(m_val); }
 
-class StringFormatter
+class COMMON_API StringFormatter
 {
 public:
     static std::string format(const std::string& format)
@@ -88,7 +88,7 @@ public:
     }
 };
 
-class StringParser
+class COMMON_API StringParser
 {
 public:
     static bool isUInt32(std::string);

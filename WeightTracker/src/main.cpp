@@ -8,11 +8,11 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "common.h"
-#include "logger.h"
-#include "filesystem.h"
-#include "string.h"
-#include "datetime.h"
+#include "mammoth/types.h"
+#include "mammoth/logger.h"
+#include "mammoth/filesystem.h"
+#include "mammoth/string.h"
+#include "mammoth/datetime.h"
 
 std::vector<std::string> loadWeightFile(const std::string& weightFilePath)
 {

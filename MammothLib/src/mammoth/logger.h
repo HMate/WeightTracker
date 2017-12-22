@@ -26,7 +26,7 @@ public:
         std::string withNewLine(msg);
         withNewLine.append("\n");
 #ifdef PLATFORM_WINDOWS
-        auto res = StringFormatter::format<T>(withNewLine, p0);
+        auto res = StringFormatter::format(withNewLine, p0);
         OutputDebugStringA(res.c_str());
 #endif
     }
@@ -37,7 +37,7 @@ public:
         std::string withNewLine(msg);
         withNewLine.append("\n");
 #ifdef PLATFORM_WINDOWS
-        auto res = StringFormatter::format<T...>(withNewLine, pargs...);
+        auto res = StringFormatter::format(withNewLine, pargs...);
         OutputDebugStringA(res.c_str());
 #endif
     }

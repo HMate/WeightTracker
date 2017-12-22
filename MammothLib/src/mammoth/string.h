@@ -44,7 +44,7 @@ public:
     }
 
     template<class T>
-    static std::string format(const std::string& format, FormatParam<T> p0)
+    static std::string _format(const std::string& format, FormatParam<T> p0)
     {
         if(format.find("%s") < 0)
         {
@@ -59,12 +59,16 @@ public:
             {
                 result.append(p0.toString());
             }
+            else if(i < parts.size()-1)
+            {
+                result.append("%s");
+            }
         }
         return result;
     }
 
     template<class U, class ...T>
-    static std::string format(const std::string& format, FormatParam<U> p0, T... pargs)
+    static std::string _format(const std::string& format, FormatParam<U> p0, T... pargs)
     {
         if(format.find("%s") < 0)
         {
@@ -79,12 +83,26 @@ public:
             {
                 result.append(p0.toString());
             }
-            else
+            else if(i < parts.size() - 1)
             {
                 result.append("%s");
             }
         }
         return StringFormatter::format<T...>(result, pargs...);
+    }
+
+    // Wrapper methods, so i dont have to explicitly write out template parameters when calling
+    template<typename T>
+    static std::string format(const std::string formatString, T p0) 
+    {
+        return _format<T>(formatString, p0);
+    }
+
+    template<typename ...T>
+    static std::string format(const std::string& formatString, T... pargs)
+    {
+        return _format<T...>(formatString, pargs...);
+        
     }
 };
 

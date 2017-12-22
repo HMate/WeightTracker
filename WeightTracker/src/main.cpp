@@ -46,14 +46,7 @@ int main(char argc, char* argv)
 
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
-
-    bool asd = StringParser::isInt32("asd");
-    bool asd2 = StringParser::isInt32("343");
-    bool asd3 = StringParser::isInt32("3423dfa3");
-
-    auto aaasd3 = StringParser::parseInt32("343421");
-    auto aaas3d3 = StringParser::parseInt32("3423dfa3");
-
+    
     char weightFilePath[2048] = "";
     FileSystem::getCurrentWorkingDirectory().copy(weightFilePath, 2048);
     strcat_s(weightFilePath, "\\weights.dtr");

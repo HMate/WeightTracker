@@ -94,7 +94,7 @@ int main(char argc, char* argv)
         ImGui::Begin("Tracker");
         {
             ImGui::SetWindowPos(ImVec2(windowPadding, editorHeight + windowPadding));
-            ImGui::SetWindowSize(ImVec2(window.getSize().x - 2.0*windowPadding, window.getSize().y - editorHeight - 2.0f*windowPadding));
+            ImGui::SetWindowSize(ImVec2(window.getSize().x - 2.0f*windowPadding, window.getSize().y - editorHeight - 2.0f*windowPadding));
             ImGui::InputText("Input file", weightFilePath, 2048);
             if(ImGui::Button("Load file"))
             {

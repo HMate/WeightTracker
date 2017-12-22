@@ -12,7 +12,7 @@
 #define GetCurrentDir getcwd
 #endif
 
-class COMMON_API File
+class File
 {
     std::string m_contents;
     int64 m_pos;
@@ -25,7 +25,7 @@ public:
     bool isEndOfFile();
 };
 
-class COMMON_API FileSystem
+class FileSystem
 {
 public:
     static std::string getCurrentWorkingDirectory();

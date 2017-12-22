@@ -8,7 +8,7 @@
 #include "string.h"
 
 
-class COMMON_API Log
+class Log
 {
 public:
     static void log(const std::string& msg)

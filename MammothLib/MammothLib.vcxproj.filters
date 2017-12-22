@@ -14,13 +14,10 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Source Files\mammoth">
-      <UniqueIdentifier>{2e6439ca-99d3-41bb-a7fb-c6a2d21e612f}</UniqueIdentifier>
+      <UniqueIdentifier>{00b7f932-c1c6-49a2-b522-987ad55f3f11}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -39,20 +36,8 @@
     <ClInclude Include="src\mammoth\types.h">
       <Filter>Source Files\mammoth</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\mammoth\datetime.cpp">
       <Filter>Source Files\mammoth</Filter>
     </ClCompile>

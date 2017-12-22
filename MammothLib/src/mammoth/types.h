@@ -1,12 +1,6 @@
 #pragma once
 #include <cinttypes>
 
-#ifdef COMMON_EXPORTS
-#define COMMON_API __declspec(dllexport)
-#else
-#define COMMON_API __declspec(dllimport)
-#endif
-
 typedef int8_t int8;
 typedef int16_t int16;
 typedef int32_t int32;

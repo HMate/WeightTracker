@@ -78,14 +78,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SFML_INCLUDE_PATH);$(SolutionDir)Common\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SFML_INCLUDE_PATH);$(SolutionDir)MammothLib\src\</AdditionalIncludeDirectories>
     </ClCompile>
     <PostBuildEvent>
       <Command>scripts/copy_dlls.bat $(OutputPath)</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalLibraryDirectories>$(SFML_LIB_PATH)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-audio-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SFML_LIB_PATH);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MammothLib.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-audio-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -104,13 +104,13 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SFML_INCLUDE_PATH);$(SolutionDir)Common\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SFML_INCLUDE_PATH);$(SolutionDir)MammothLib\src\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SFML_LIB_PATH)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-network.lib;sfml-audio.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SFML_LIB_PATH);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MammothLib.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-network.lib;sfml-audio.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>scripts/copy_dlls.bat $(OutputPath)</Command>
@@ -151,11 +151,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\copy_dlls.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.vcxproj">
-      <Project>{a79d3a9d-5c40-4728-8c56-e7ae0cdea55d}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

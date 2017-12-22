@@ -2,7 +2,7 @@
 #include "types.h"
 #include "string.h"
 
-class COMMON_API DateTime
+class DateTime
 {
     // TODO: pack these into single number if necessary
     int32 m_year;

@@ -84,8 +84,8 @@
       <Command>scripts/copy_dlls.bat $(OutputPath)</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalLibraryDirectories>$(SFML_LIB_PATH);$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MammothLib.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-audio-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SFML_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-network-d.lib;sfml-audio-d.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,8 +109,8 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SFML_LIB_PATH);$(OutDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MammothLib.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-network.lib;sfml-audio.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SFML_LIB_PATH)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-network.lib;sfml-audio.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>scripts/copy_dlls.bat $(OutputPath)</Command>
@@ -151,6 +151,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\copy_dlls.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MammothLib\MammothLib.vcxproj">
+      <Project>{47389010-5cb7-4491-a12f-15145df40b71}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

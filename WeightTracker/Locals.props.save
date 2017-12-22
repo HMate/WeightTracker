@@ -3,6 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <SFML_LIB_PATH>{Path to SFML lib folder}</SFML_LIB_PATH>
+    <SFML_INCLUDE_PATH>{Path to SFML include folder}</SFML_INCLUDE_PATH>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />
@@ -11,5 +12,10 @@
       <Value>$(SFML_LIB_PATH)</Value>
       <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
+    <BuildMacro Include="SFML_INCLUDE_PATH">
+      <Value>$(SFML_INCLUDE_PATH)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
   </ItemGroup>
 </Project>

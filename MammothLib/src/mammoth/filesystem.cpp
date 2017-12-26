@@ -25,7 +25,7 @@ std::string File::readLine()
     if(m_pos < m_contents.size())
     {
        int64 nlpos = m_contents.find('\n', static_cast<uint32>(m_pos));
-       if(nlpos > -1)
+       if(nlpos != std::string::npos)
        {
            line = m_contents.substr(static_cast<uint32>(m_pos), static_cast<uint32>(nlpos-m_pos));
        }

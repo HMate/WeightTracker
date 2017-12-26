@@ -32,6 +32,7 @@ public:
 std::string FormatParam<int16>::toString() { return std::to_string(m_val); }
 std::string FormatParam<int32>::toString() { return std::to_string(m_val); }
 std::string FormatParam<int64>::toString() { return std::to_string(m_val); }
+std::string FormatParam<uint64>::toString() { return std::to_string(m_val); }
 std::string FormatParam<float>::toString() { return std::to_string(m_val); }
 std::string FormatParam<double>::toString() { return std::to_string(m_val); }
 
@@ -40,54 +41,66 @@ class StringFormatter
 public:
     static std::string format(const std::string& format)
     {
-        return format;
+        std::string result(format);
+        auto pos = result.find("%%s");
+        while(pos != std::string::npos)
+        {
+            auto start = result.begin() + pos;
+            result.replace(start, start+3, "%s");
+            pos = result.find("%%s");
+        }
+        return result;
     }
 
     template<class T>
     static std::string _format(const std::string& format, FormatParam<T> p0)
     {
-        if(format.find("%s") < 0)
+        auto pos = format.find("%s");
+        if(pos == std::string::npos)
         {
-            return format;
+            return StringFormatter::format(format);
         }
+
+        while((pos > 0) && (format[pos-1] == '%'))
+        {
+            pos = format.find("%s", pos+1);
+            if(pos == std::string::npos)
+            {
+                return StringFormatter::format(format);
+            }
+        }
+
         std::string result;
-        strarray parts = String(format).split("%s");
-        for(size_t i = 0; i<parts.size(); i++)
-        {
-            result.append(parts[i]);
-            if(i == 0)
-            {
-                result.append(p0.toString());
-            }
-            else if(i < parts.size()-1)
-            {
-                result.append("%s");
-            }
-        }
-        return result;
+        result.append(format.substr(0, pos));
+        result.append(p0.toString());
+        result.append(format.substr(pos+2));
+        
+        return StringFormatter::format(result);
     }
 
     template<class U, class ...T>
     static std::string _format(const std::string& format, FormatParam<U> p0, T... pargs)
     {
-        if(format.find("%s") < 0)
+        auto pos = format.find("%s");
+        if(pos == std::string::npos)
         {
-            return format;
+            return StringFormatter::format(format);
         }
+
+        while((pos > 0) && (format[pos - 1] == '%'))
+        {
+            pos = format.find("%s", pos + 1);
+            if(pos == std::string::npos)
+            {
+                return StringFormatter::format(format);
+            }
+        }
+
         std::string result;
-        strarray parts = String(format).split("%s");
-        for(size_t i = 0; i<parts.size() - 1; i++)
-        {
-            result.append(parts[i]);
-            if(i == 0)
-            {
-                result.append(p0.toString());
-            }
-            else if(i < parts.size() - 1)
-            {
-                result.append("%s");
-            }
-        }
+        result.append(format.substr(0, pos));
+        result.append(p0.toString());
+        result.append(format.substr(pos+2));
+
         return StringFormatter::format<T...>(result, pargs...);
     }
 

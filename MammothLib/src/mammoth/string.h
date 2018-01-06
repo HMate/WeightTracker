@@ -127,4 +127,7 @@ public:
 
     static bool isInt32(std::string);
     static int32 parseInt32(std::string);
+
+    static bool isFloat(std::string);
+    static float parseFloat(std::string);
 };

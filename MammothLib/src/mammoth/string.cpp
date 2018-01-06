@@ -105,3 +105,32 @@ uint32 StringParser::parseUInt32(std::string input)
     }
     return val;
 }
+
+bool StringParser::isFloat(std::string input)
+{
+    try
+    {
+        float val = std::stof(input);
+        if(val > static_cast<int64>(UINT32_MAX))
+            return false;
+        return true;
+    }
+    catch(const std::exception&)
+    {
+        return false;
+    }
+}
+
+float StringParser::parseFloat(std::string input)
+{
+    float val;
+    try
+    {
+        val = std::stof(input);
+    }
+    catch(const std::exception&)
+    {
+        Log::log("Cant parse in uint32: %s", input);
+    }
+    return val;
+}

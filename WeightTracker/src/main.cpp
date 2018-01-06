@@ -14,9 +14,21 @@
 #include "mammoth/string.h"
 #include "mammoth/datetime.h"
 
-std::vector<std::string> loadWeightFile(const std::string& weightFilePath)
+class WeightFileLine
 {
-    std::vector<std::string> result;
+    float m_weight;
+    DateTime m_date;
+public:
+    WeightFileLine(DateTime date, float weight) : m_date(date), m_weight(weight) {}
+    std::string toString()
+    {
+        return StringFormatter::format("%s %s", m_date.toString(), m_weight);
+    }
+};
+
+std::vector<WeightFileLine> loadWeightFile(const std::string& weightFilePath)
+{
+    std::vector<WeightFileLine> result;
 
     File weightFile;
     weightFile.loadFile(weightFilePath);
@@ -30,7 +42,7 @@ std::vector<std::string> loadWeightFile(const std::string& weightFilePath)
             std::string date = parts[0];
             DateTime dt(date);
             std::string weight = parts[1];
-            result.push_back(line);
+            result.push_back(WeightFileLine(dt, StringParser::parseFloat(parts[1])));
         }
         else
             Log::log("Error: less than 2 parts in: %s", line);
@@ -47,10 +59,12 @@ int main(char argc, char* argv)
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
     
+    // Set initial weight file, and load it in. 
+    // TODO: This will be replaced by loading in the last saved file path
     char weightFilePath[2048] = "";
     FileSystem::getCurrentWorkingDirectory().copy(weightFilePath, 2048);
     strcat_s(weightFilePath, "\\weights.dtr");
-    std::vector<std::string> weights = loadWeightFile(weightFilePath);
+    std::vector<WeightFileLine> weights = loadWeightFile(weightFilePath);
     
     sf::Clock deltaClock;
     while(window.isOpen())
@@ -89,17 +103,21 @@ int main(char argc, char* argv)
             ImGui::SetWindowPos(ImVec2(windowPadding, editorHeight + windowPadding));
             ImGui::SetWindowSize(ImVec2(window.getSize().x - 2.0f*windowPadding, window.getSize().y - editorHeight - 2.0f*windowPadding));
             ImGui::InputText("Input file", weightFilePath, 2048);
+            ImGui::SameLine();
             if(ImGui::Button("Load file"))
             {
                 weights = loadWeightFile(weightFilePath);
             }
+
             ImGui::BeginChild("Sub1", ImVec2(ImGui::GetWindowContentRegionWidth(), 300), false, ImGuiWindowFlags_HorizontalScrollbar);
             for(auto w : weights)
             {
-                ImGui::Text(w.c_str());
+                ImGui::Text(w.toString().c_str());
             }
             ImGui::SetScrollHere();
             ImGui::EndChild();
+
+            ImGui::PlotLines("Weights", reinterpret_cast<float*>(weights.data()), weights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(WeightFileLine));
         }
         ImGui::End();
     

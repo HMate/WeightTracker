@@ -31,6 +31,7 @@ public:
 
 std::string FormatParam<int16>::toString() { return std::to_string(m_val); }
 std::string FormatParam<int32>::toString() { return std::to_string(m_val); }
+std::string FormatParam<uint32>::toString() { return std::to_string(m_val); }
 std::string FormatParam<int64>::toString() { return std::to_string(m_val); }
 std::string FormatParam<uint64>::toString() { return std::to_string(m_val); }
 std::string FormatParam<float>::toString() { return std::to_string(m_val); }

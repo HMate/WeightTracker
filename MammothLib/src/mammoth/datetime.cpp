@@ -55,3 +55,9 @@ void DateTime::setDateTime(int32 year, uint32 month, uint32 day, uint32 hours, u
     m_second = seconds;
     m_msecond = mseconds;
 }
+
+std::string DateTime::toString(/*TODO: param as format*/)
+{
+    return StringFormatter::format("%s-%s-%s %s:%s:%s", m_year, m_month, m_day, m_hour, m_minute, m_second);
+}
+

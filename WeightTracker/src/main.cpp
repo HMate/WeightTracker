@@ -117,6 +117,7 @@ int main(char argc, char* argv)
             ImGui::SetScrollHere();
             ImGui::EndChild();
 
+            // TODO: Fill empty dates with interolated values and plot that
             ImGui::PlotLines("Weights", reinterpret_cast<float*>(weights.data()), weights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(WeightFileLine));
         }
         ImGui::End();

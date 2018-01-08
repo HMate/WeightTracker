@@ -2,6 +2,19 @@
 
 #include "logger.h"
 
+
+TimeSpan::TimeSpan(int32 day, int32 hours, int32 minutes, int32 seconds, int32 mseconds)
+{
+    m_msecond = day * TimeSpan::DayInMicroSeconds + hours * TimeSpan::HourInMicroSeconds + minutes * TimeSpan::MinuteInMicroSeconds +
+        seconds * TimeSpan::SecondInMicroSeconds + mseconds;
+}
+
+TimeSpan TimeSpan::Day(int32 count)
+{
+    return TimeSpan(count);
+}
+
+
 DateTime::DateTime(std::string dateString/*, std::string format = "%F %T"*/)
 {
     parseDate(String(dateString));
@@ -11,6 +24,11 @@ DateTime::DateTime(std::string dateString/*, std::string format = "%F %T"*/)
 DateTime::DateTime(String dateString/*, std::string format = "%F %T"*/)
 {
     parseDate(dateString);
+}
+
+DateTime::DateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 mseconds)
+{
+    setDateTime(year, month, day, hours, minutes, seconds, mseconds);
 }
 
 void DateTime::parseDate(String dateString/*, std::string format = "%F %T"*/)
@@ -52,20 +70,60 @@ void DateTime::parseDate(String dateString/*, std::string format = "%F %T"*/)
     }
 }
 
-DateTime::DateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, uint32 mseconds)
+void DateTime::setDateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 mseconds)
 {
-    setDateTime(year, month, day, hours, minutes, seconds, mseconds);
-}
+    int64 overflow = 0;
+    m_msecond = mseconds % 1000000;
+    overflow = mseconds / 1000000;
+    m_second = (seconds + overflow) % 60;
+    overflow = (seconds + overflow) / 60;
+    m_minute = (minutes + overflow) % 60;
+    overflow = (minutes + overflow) / 60;
+    m_hour = (hours + overflow) % 24;
+    overflow = (hours + overflow) / 24;
 
-void DateTime::setDateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, uint32 mseconds)
-{
+    // set initial year, month, add overflow to this if there is any based on initial date
     m_year = year;
     m_month = month;
-    m_day = day;
-    m_hour = hours;
-    m_minute = minutes;
-    m_second = seconds;
-    m_msecond = mseconds;
+    m_day = 0;
+
+    uint32 daysToAdd = day + overflow;
+    int32 daysInMonth = 0;
+    do
+    {
+        m_year += ((m_month - 1) / 12);
+        m_month = ((m_month - 1) % 12) + 1;
+
+        overflow = 0;
+        std::vector<int32> monthStart{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+        if(!isLeapYear())
+        {
+            monthStart = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
+        }
+
+        int32 nextMonthStart = monthStart[m_month];
+        daysInMonth = nextMonthStart - monthStart[m_month - 1];
+
+        if(daysToAdd >= daysInMonth)
+        {
+            daysToAdd = (daysToAdd - daysInMonth);
+            m_month++;
+        }
+    } while(daysToAdd >= daysInMonth);
+
+    m_year += ((m_month - 1) / 12);
+    m_month = ((m_month - 1) % 12) + 1;
+    m_day = daysToAdd;
+}
+
+bool DateTime::isLeapYear() const
+{
+    return (m_year % 4) == 0;
+}
+
+DateTime DateTime::operator+(const TimeSpan& dt) const
+{
+    return DateTime(m_year, m_month, m_day, m_hour, m_minute, m_second, m_msecond + dt.m_msecond);
 }
 
 std::string DateTime::toString(/*TODO: param as format*/) const

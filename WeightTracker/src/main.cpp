@@ -14,11 +14,11 @@
 #include "mammoth/string.h"
 #include "mammoth/datetime.h"
 
-class WeightFileLine
+struct WeightFileLine
 {
     float m_weight;
     DateTime m_date;
-public:
+
     WeightFileLine(DateTime date, float weight) : m_date(date), m_weight(weight) {}
     std::string toString()
     {
@@ -26,29 +26,40 @@ public:
     }
 };
 
-std::vector<WeightFileLine> loadWeightFile(const std::string& weightFilePath)
+class WeightFile
 {
-    std::vector<WeightFileLine> result;
+    std::vector<WeightFileLine> m_weights;
+public:
+    WeightFile(){}
 
-    File weightFile;
-    weightFile.loadFile(weightFilePath);
-    std::string header = weightFile.readLine();
-    while(!weightFile.isEndOfFile())
+    void loadWeightFile(const std::string& weightFilePath)
     {
-        String line = weightFile.readLine();
-        std::vector<std::string> parts = line.split(",");
-        if(parts.size() >= 2)
+        m_weights.clear();
+        File weightFile;
+        weightFile.loadFile(weightFilePath);
+        std::string header = weightFile.readLine();
+        while(!weightFile.isEndOfFile())
         {
-            std::string date = parts[0];
-            DateTime dt(date);
-            std::string weight = parts[1];
-            result.push_back(WeightFileLine(dt, StringParser::parseFloat(parts[1])));
+            String line = weightFile.readLine();
+            std::vector<std::string> parts = line.split(",");
+            if(parts.size() >= 2)
+            {
+                std::string date = parts[0];
+                DateTime dt(date);
+                std::string weight = parts[1];
+                m_weights.push_back(WeightFileLine(dt, StringParser::parseFloat(parts[1])));
+            }
+            else
+                Log::log("Error: less than 2 parts in: %s", line);
         }
-        else
-            Log::log("Error: less than 2 parts in: %s", line);
     }
-    return result;
-}
+
+    std::vector<WeightFileLine>& getWeights()
+    {
+        return m_weights;
+    }
+};
+
 
 int main(char argc, char* argv)
 {
@@ -64,7 +75,8 @@ int main(char argc, char* argv)
     char weightFilePath[2048] = "";
     FileSystem::getCurrentWorkingDirectory().copy(weightFilePath, 2048);
     strcat_s(weightFilePath, "\\weights.dtr");
-    std::vector<WeightFileLine> weights = loadWeightFile(weightFilePath);
+    WeightFile weightsFile;
+    weightsFile.loadWeightFile(weightFilePath);
     
     sf::Clock deltaClock;
     while(window.isOpen())
@@ -106,11 +118,11 @@ int main(char argc, char* argv)
             ImGui::SameLine();
             if(ImGui::Button("Load file"))
             {
-                weights = loadWeightFile(weightFilePath);
+                weightsFile.loadWeightFile(weightFilePath);
             }
 
             ImGui::BeginChild("Sub1", ImVec2(ImGui::GetWindowContentRegionWidth(), 300), false, ImGuiWindowFlags_HorizontalScrollbar);
-            for(auto w : weights)
+            for(auto w : weightsFile.getWeights())
             {
                 ImGui::Text(w.toString().c_str());
             }
@@ -118,7 +130,17 @@ int main(char argc, char* argv)
             ImGui::EndChild();
 
             // TODO: Fill empty dates with interolated values and plot that
-            ImGui::PlotLines("Weights", reinterpret_cast<float*>(weights.data()), weights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(WeightFileLine));
+            // Get at least one index for every day from first date to last.  Interpolate missing days.
+            auto& weights = weightsFile.getWeights();
+            std::vector<float> interpolatedWeights;
+            DateTime last = DateTime();
+            
+            for(auto w : weights)
+            {
+                //if(w.m_date.getDay() > last.getNextDay().getDay()) // TODO: getNextDay simplified version
+                interpolatedWeights.push_back(w.m_weight);
+            }
+            ImGui::PlotLines("Weights", interpolatedWeights.data(), interpolatedWeights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(float));
         }
         ImGui::End();
     

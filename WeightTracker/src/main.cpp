@@ -62,11 +62,10 @@ public:
 
 // Fill empty dates with interolated values and plot that
 // Get at least one index for every day from first date to last.  Interpolate missing days.
-void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates, std::vector<float>& sampleWeights)
+void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates)
 {
     interpolatedWeights.clear();
     interpolatedDates.clear();
-    sampleWeights.clear();
     WeightFileLine prevLine = WeightFileLine(weights[0].m_date, 0.0f);
     for(auto w : weights)
     {
@@ -83,22 +82,13 @@ void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std
         }
         interpolatedWeights.push_back(w.m_weight);
         interpolatedDates.push_back(w.m_date);
-        sampleWeights.push_back(w.m_weight);
         prevLine = w;
     }
 }
 
-void loadTableText(const std::vector<WeightFileLine>& weights, std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates, std::vector<float>& sampleWeights,
-    std::vector<std::string>& interpolatedTexts, std::vector<std::string>& sampleWeightTexts)
+void loadTableText(std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates, std::vector<std::string>& interpolatedTexts)
 {
     int i = 0;
-    sampleWeightTexts.clear();
-    for(auto w : weights)
-    {
-        i++;
-        sampleWeightTexts.push_back(StringFormatter::format("%s - %s", i, w.toString()));
-    }
-    i = 0;
     interpolatedTexts.clear();
     for(int32 i = 0; i < interpolatedDates.size(); i++)
     {
@@ -126,13 +116,11 @@ int main(char argc, char* argv)
     auto& weights = weightsFile.getWeights();
     std::vector<float> interpolatedWeights;
     std::vector<DateTime> interpolatedDates;
-    std::vector<float> sampleWeights;
 
     std::vector<std::string> interpolatedTexts;
-    std::vector<std::string> sampleWeightTexts;
 
-    loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates, sampleWeights);
-    loadTableText(weights, interpolatedWeights, interpolatedDates, sampleWeights, interpolatedTexts, sampleWeightTexts);
+    loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates);
+    loadTableText(interpolatedWeights, interpolatedDates, interpolatedTexts);
 
     sf::Clock deltaClock;
     while(window.isOpen())
@@ -176,19 +164,11 @@ int main(char argc, char* argv)
             {
                 weightsFile.loadWeightFile(weightFilePath);
                 weights = weightsFile.getWeights();
-                loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates, sampleWeights);
-                loadTableText(weights, interpolatedWeights, interpolatedDates, sampleWeights, interpolatedTexts, sampleWeightTexts);
+                loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates);
+                loadTableText(interpolatedWeights, interpolatedDates, interpolatedTexts);
             }
-            ImGui::PlotLines("##WeightsSampled", sampleWeights.data(), sampleWeights.size(), 0, "WeightsSampled", 60.0f, 120.0f, ImVec2(0, 200), sizeof(float));
             ImGui::PlotLines("##Weights", interpolatedWeights.data(), interpolatedWeights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(float));
-
-            ImGui::BeginChild("WeightsSampled Table", ImVec2(ImGui::GetWindowContentRegionWidth(), 300), false, ImGuiWindowFlags_HorizontalScrollbar);
-            for(auto s : sampleWeightTexts)
-            {
-                ImGui::Text(s.c_str());
-            }
-            ImGui::EndChild();
-
+            
             ImGui::Separator();
 
             ImGui::BeginChild("WeightsInterp Table", ImVec2(ImGui::GetWindowContentRegionWidth(), 300), false, ImGuiWindowFlags_HorizontalScrollbar);

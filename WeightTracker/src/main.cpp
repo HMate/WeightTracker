@@ -62,10 +62,9 @@ public:
 
 // Fill empty dates with interolated values and plot that
 // Get at least one index for every day from first date to last.  Interpolate missing days.
-void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates)
+void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std::vector<WeightFileLine>& interpolatedWeights)
 {
     interpolatedWeights.clear();
-    interpolatedDates.clear();
     WeightFileLine prevLine = WeightFileLine(weights[0].m_date, 0.0f);
     for(auto w : weights)
     {
@@ -76,23 +75,20 @@ void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std
         while(targetDay > nextDay.getDay())
         {
             float middleWeight = prevLine.m_weight + ((w.m_weight - prevLine.m_weight) * (nextDay.getDay() - lastDay) / (targetDay - lastDay));
-            interpolatedWeights.push_back(middleWeight);
-            interpolatedDates.push_back(nextDay);
+            interpolatedWeights.push_back(WeightFileLine(nextDay, middleWeight));
             nextDay = nextDay + TimeSpan::Day(1);
         }
-        interpolatedWeights.push_back(w.m_weight);
-        interpolatedDates.push_back(w.m_date);
+        interpolatedWeights.push_back(w);
         prevLine = w;
     }
 }
 
-void loadTableText(std::vector<float>& interpolatedWeights, std::vector<DateTime>& interpolatedDates, std::vector<std::string>& interpolatedTexts)
+void loadTableText(std::vector<WeightFileLine>& interpolatedWeights, std::vector<std::string>& interpolatedTexts)
 {
-    int i = 0;
     interpolatedTexts.clear();
-    for(int32 i = 0; i < interpolatedDates.size(); i++)
+    for(int32 i = 0; i < interpolatedWeights.size(); i++)
     {
-        interpolatedTexts.push_back(StringFormatter::format("%s - %s", i, WeightFileLine(interpolatedDates[i], interpolatedWeights[i]).toString()));
+        interpolatedTexts.push_back(StringFormatter::format("%s - %s", i, WeightFileLine(interpolatedWeights[i].m_date, interpolatedWeights[i].m_weight).toString()));
     }
 }
 
@@ -114,13 +110,12 @@ int main(char argc, char* argv)
     weightsFile.loadWeightFile(weightFilePath);
     
     auto& weights = weightsFile.getWeights();
-    std::vector<float> interpolatedWeights;
-    std::vector<DateTime> interpolatedDates;
+    std::vector<WeightFileLine> interpolatedWeights;
 
     std::vector<std::string> interpolatedTexts;
 
-    loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates);
-    loadTableText(interpolatedWeights, interpolatedDates, interpolatedTexts);
+    loadInterpolatedWeightsData(weights, interpolatedWeights);
+    loadTableText(interpolatedWeights, interpolatedTexts);
 
     sf::Clock deltaClock;
     while(window.isOpen())
@@ -164,10 +159,10 @@ int main(char argc, char* argv)
             {
                 weightsFile.loadWeightFile(weightFilePath);
                 weights = weightsFile.getWeights();
-                loadInterpolatedWeightsData(weights, interpolatedWeights, interpolatedDates);
-                loadTableText(interpolatedWeights, interpolatedDates, interpolatedTexts);
+                loadInterpolatedWeightsData(weights, interpolatedWeights);
+                loadTableText(interpolatedWeights, interpolatedTexts);
             }
-            ImGui::PlotLines("##Weights", interpolatedWeights.data(), interpolatedWeights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(float));
+            ImGui::PlotLines("##Weights", reinterpret_cast<float*>(weights.data()), weights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(WeightFileLine));
             
             ImGui::Separator();
 

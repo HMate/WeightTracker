@@ -15,13 +15,8 @@ TimeSpan TimeSpan::Day(int32 count)
 }
 
 
-DateTime::DateTime(std::string dateString/*, std::string format = "%F %T"*/)
-{
-    parseDate(String(dateString));
-}
-
 // TODO: implement format string if needed, should conform to http://www.cplusplus.com/reference/ctime/strftime/
-DateTime::DateTime(String dateString/*, std::string format = "%F %T"*/)
+DateTime::DateTime(const String& dateString/*, std::string format = "%F %T"*/)
 {
     parseDate(dateString);
 }
@@ -31,7 +26,44 @@ DateTime::DateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 mi
     setDateTime(year, month, day, hours, minutes, seconds, mseconds);
 }
 
-void DateTime::parseDate(String dateString/*, std::string format = "%F %T"*/)
+bool DateTime::isValid(const String& dateString)
+{
+    strarray dateTimeParts = dateString.split(" ");
+    if(dateTimeParts.size() == 2)
+    {
+        strarray dateParts = String(dateTimeParts[0]).split("-");
+        strarray timeParts = String(dateTimeParts[1]).split(":");
+        if(dateParts.size() == 3 && timeParts.size() == 3)
+        {
+            if(StringParser::isInt32(dateParts[0]) && StringParser::isUInt32(dateParts[1]) && StringParser::isUInt32(dateParts[2]) &&
+                StringParser::isUInt32(timeParts[0]) && StringParser::isUInt32(timeParts[1]) && StringParser::isUInt32(timeParts[2]))
+            {
+                bool year = StringParser::isInt32(dateParts[0]);
+                bool month = StringParser::isUInt32(dateParts[1]);
+                bool day = StringParser::isUInt32(dateParts[2]);
+
+                bool hour = StringParser::isInt32(timeParts[0]);
+                bool min = StringParser::isUInt32(timeParts[1]);
+                bool sec = StringParser::isUInt32(timeParts[2]);
+                return year && month && day && hour && min && sec;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void DateTime::parseDate(const String& dateString/*, std::string format = "%F %T"*/)
 {
     // TODO: Need isValidDate method, to check if string is valid date
     strarray dateTimeParts = dateString.split(" ");

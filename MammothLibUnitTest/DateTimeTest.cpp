@@ -29,6 +29,19 @@ TEST(DateTimeTest, Getters) {
     assertTestDate(DateTime("0-1-1 0:0:0"), "0-1-1 0:0:0", 0, 1, 1, 0, 0, 0, 0);
 }
 
+TEST(DateTimeTest, IsValid) {
+    EXPECT_TRUE(DateTime::isValid("2002-1-21 23:22:01"));
+    EXPECT_TRUE(DateTime::isValid("2002-1-21 23:22:1"));
+    EXPECT_TRUE(DateTime::isValid("1876-02-18 00:32:49"));
+    EXPECT_TRUE(DateTime::isValid("1876-2-18 0:32:49"));
+    EXPECT_TRUE(DateTime::isValid("0-1-1 0:0:0"));
+
+    EXPECT_FALSE(DateTime::isValid("ABBA-2-18 0:32:49"));
+    EXPECT_FALSE(DateTime::isValid("23ABBA11-2-18 0:32:49")); // sigh
+    EXPECT_FALSE(DateTime::isValid("74612784562371461284687-2-18 0:32:49"));
+    EXPECT_FALSE(DateTime::isValid("-10-1-1 0:0:0"));
+}
+
 TEST(DateTimeTest, Overflow){
     assertTestDate(DateTime(2002, 1, 21, 23, 22, 34, 1000023), "2002-1-21 23:22:35", 2002, 1, 21, 23, 22, 35, 23);
     assertTestDate(DateTime(2002, 1, 21, 23, 22, 34, 10997699), "2002-1-21 23:22:44", 2002, 1, 21, 23, 22, 44, 997699);

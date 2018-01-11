@@ -37,11 +37,11 @@ class DateTime
     // 1234567890123456789012345678901234567890123456789012345678901234
     uint64 m_packed;
 public:
-    DateTime(std::string dateString/*, std::string format = "%F %T"*/);
-    DateTime(String dateString/*, std::string format = "%F %T"*/);
+    DateTime(const String& dateString/*, std::string format = "%F %T"*/);
     DateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 mseconds = 0);
     
-    void parseDate(String dateString/*, std::string format = "%F %T"*/);
+    void parseDate(const String& dateString/*, std::string format = "%F %T"*/);
+    static bool isValid(const String& dateString);
 
     void setDateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 mseconds = 0);
     std::string toString(/*TODO: param as format*/) const;

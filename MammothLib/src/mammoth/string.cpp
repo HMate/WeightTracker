@@ -7,7 +7,7 @@
 Split the string to parts around the given token.
 Gives back a list of strings. The list elemnts contain the substring without the token in original order.
 */
-strarray String::split(const std::string& token)
+strarray String::split(const std::string& token) const
 {
     //from: https://www.reddit.com/r/cpp/comments/5dxnwm/why_doesnt_stdstring_have_a_split_function/daarp86/
     strarray results;

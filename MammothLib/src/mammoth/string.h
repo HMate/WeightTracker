@@ -10,8 +10,9 @@ class String
     std::string m_content;
 public:
     String(const std::string& content = "") : m_content(content){}
+    String(const char* content) : m_content(content){}
 
-    strarray split(const std::string& tokens);
+    strarray split(const std::string& tokens) const;
     operator std::string();
     const char* str();
 };

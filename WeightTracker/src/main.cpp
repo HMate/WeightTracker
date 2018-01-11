@@ -133,14 +133,27 @@ int main(char argc, char* argv)
             // Get at least one index for every day from first date to last.  Interpolate missing days.
             auto& weights = weightsFile.getWeights();
             std::vector<float> interpolatedWeights;
-            DateTime last = DateTime();
+            std::vector<float> sampleWeights;
+            WeightFileLine last = WeightFileLine(weights[0].m_date, 0.0f);
             
             for(auto w : weights)
             {
-                //if(w.m_date.getDay() > last.getNextDay().getDay()) // TODO: getNextDay simplified version
+                auto nextDay = last.m_date + TimeSpan::Day(1);
+                auto lastDay = last.m_date.getDay();
+                auto targetDay = w.m_date.getDay();
+
+                while(targetDay > nextDay.getDay())
+                {
+                    float middleWeight = last.m_weight + ((last.m_weight - w.m_weight) * (nextDay.getDay() - lastDay) / (targetDay - lastDay));
+                    interpolatedWeights.push_back(middleWeight);
+                    nextDay = nextDay + TimeSpan::Day(1);
+                }
                 interpolatedWeights.push_back(w.m_weight);
+                sampleWeights.push_back(w.m_weight);
+                last = w;
             }
-            ImGui::PlotLines("Weights", interpolatedWeights.data(), interpolatedWeights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(float));
+            ImGui::PlotLines("##Weights", interpolatedWeights.data(), interpolatedWeights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(float));
+            ImGui::PlotLines("##WeightsSampled", sampleWeights.data(), sampleWeights.size(), 0, "WeightsSampled", 60.0f, 120.0f, ImVec2(0, 200), sizeof(float));
         }
         ImGui::End();
     

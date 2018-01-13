@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\imgui\LICENSE_imgui.txt" />
+    <Text Include="src\imgui\LICENSE_imgui_sfml.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\copy_dlls.bat" />

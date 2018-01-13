@@ -30,13 +30,13 @@ public:
     }
 };
 
-std::string FormatParam<int16>::toString() { return std::to_string(m_val); }
-std::string FormatParam<int32>::toString() { return std::to_string(m_val); }
-std::string FormatParam<uint32>::toString() { return std::to_string(m_val); }
-std::string FormatParam<int64>::toString() { return std::to_string(m_val); }
-std::string FormatParam<uint64>::toString() { return std::to_string(m_val); }
-std::string FormatParam<float>::toString() { return std::to_string(m_val); }
-std::string FormatParam<double>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<int16>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<int32>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<uint32>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<int64>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<uint64>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<float>::toString() { return std::to_string(m_val); }
+template<> std::string FormatParam<double>::toString() { return std::to_string(m_val); }
 
 class StringFormatter
 {
@@ -124,6 +124,11 @@ public:
 class StringParser
 {
 public:
+    // isNumber functions check if the input contains a number without checking its range
+    static bool isIntNumber(std::string);
+    static bool isUIntNumber(std::string);
+    static bool isFloatNumber(std::string);
+
     static bool isUInt32(std::string);
     static uint32 parseUInt32(std::string);
 

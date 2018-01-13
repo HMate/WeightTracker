@@ -45,13 +45,43 @@ const char* String::str()
 
 // ----------------------------------------------------------------------------------------------
 // TODO: I guess own functions would be better instead of using the std ones and catching exceptions
-//  This method may be slow, but for know its fine.
+
+bool StringParser::isIntNumber(std::string input)
+{
+    for(int i = 0; i < input.size(); i++)
+    {
+        const auto& c = input[i];
+        if(c < '0' || c > '9')
+        {
+            if(i == 0 && c == '-')
+                continue;
+            return false;
+        }
+    }
+    return input.size() > 0;
+}
+
+bool StringParser::isUIntNumber(std::string input)
+{
+    for(int i = 0; i < input.size(); i++)
+    {
+        const auto& c = input[i];
+        if(c < '0' || c > '9')
+        {
+            return false;
+        }
+    }
+    return input.size() > 0;
+}
 
 bool StringParser::isInt32(std::string input)
 {
+    // stoi parses numbers until first non-number character is met.
+    // We dont want that, we want only strings with actual numbers, so check that
+    if(!StringParser::isIntNumber(input))
+        return false;
     try
     {
-        // TODO: this incorrectly parses in the string "3423dfa3" as 3423
         int32 val = std::stoi(input);
         return true;
     }
@@ -63,7 +93,7 @@ bool StringParser::isInt32(std::string input)
 
 int32 StringParser::parseInt32(std::string input)
 {
-    int32 val;
+    int32 val = 0;
     try
     {
         val = std::stoi(input);
@@ -77,6 +107,9 @@ int32 StringParser::parseInt32(std::string input)
 
 bool StringParser::isUInt32(std::string input)
 {
+    if(!StringParser::isUIntNumber(input))
+        return false;
+
     try
     {
         int64 val = std::stoll(input);
@@ -94,9 +127,10 @@ bool StringParser::isUInt32(std::string input)
 
 uint32 StringParser::parseUInt32(std::string input)
 {
-    uint32 val;
+    uint32 val = 0;
     try
     {
+        // can over/underflow, but doesnt matter, user should check if its a valid string before
         val = static_cast<uint32>(std::stoll(input));
     }
     catch(const std::exception&)
@@ -123,7 +157,7 @@ bool StringParser::isFloat(std::string input)
 
 float StringParser::parseFloat(std::string input)
 {
-    float val;
+    float val = 0.0f;
     try
     {
         val = std::stof(input);

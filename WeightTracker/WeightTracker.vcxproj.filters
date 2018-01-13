@@ -60,6 +60,9 @@
     <Text Include="src\imgui\LICENSE_imgui.txt">
       <Filter>Source Files\imgui</Filter>
     </Text>
+    <Text Include="src\imgui\LICENSE_imgui_sfml.txt">
+      <Filter>Source Files\imgui</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\copy_dlls.bat">

@@ -74,6 +74,28 @@ bool StringParser::isUIntNumber(std::string input)
     return input.size() > 0;
 }
 
+bool StringParser::isFloatNumber(std::string input)
+{
+    bool hadDot = false;
+    for(int i = 0; i < input.size(); i++)
+    {
+        const auto& c = input[i];
+        if((c < '0' || c > '9') && c != '.')
+        {
+            if(i == 0 && c == '-')
+                continue;
+            return false;
+        }
+        if(c == '.')
+        {
+            if(hadDot)
+                return false;
+            hadDot = true;
+        }
+    }
+    return input.size() > 0;
+}
+
 bool StringParser::isInt32(std::string input)
 {
     // stoi parses numbers until first non-number character is met.
@@ -142,11 +164,12 @@ uint32 StringParser::parseUInt32(std::string input)
 
 bool StringParser::isFloat(std::string input)
 {
+    if(!StringParser::isFloatNumber(input))
+        return false;
+
     try
     {
         float val = std::stof(input);
-        if(val > static_cast<int64>(UINT32_MAX))
-            return false;
         return true;
     }
     catch(const std::exception&)
@@ -164,7 +187,7 @@ float StringParser::parseFloat(std::string input)
     }
     catch(const std::exception&)
     {
-        Log::log("Cant parse in uint32: %s", input);
+        Log::log("Cant parse in float: %s", input);
     }
     return val;
 }

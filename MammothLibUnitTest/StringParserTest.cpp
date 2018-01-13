@@ -14,6 +14,10 @@ TEST(StringParserTest, IsIntNumber) {
     EXPECT_TRUE(StringParser::isIntNumber("-21474836472147483647214748364721474836472147483647"));
     EXPECT_TRUE(StringParser::isIntNumber("927598716587615618751577126487326536578264247"));
 
+    EXPECT_FALSE(StringParser::isIntNumber("4612-767"));
+    EXPECT_FALSE(StringParser::isIntNumber("+4612767"));
+    EXPECT_FALSE(StringParser::isIntNumber("--4612767"));
+    EXPECT_FALSE(StringParser::isIntNumber("-4612-767"));
     EXPECT_FALSE(StringParser::isIntNumber("4612767198659126571a"));
     EXPECT_FALSE(StringParser::isIntNumber("4612,71"));
     EXPECT_FALSE(StringParser::isIntNumber("4612.71"));
@@ -54,6 +58,50 @@ TEST(StringParserTest, IsUIntNumber) {
     EXPECT_FALSE(StringParser::isUIntNumber("   3d "));
     EXPECT_FALSE(StringParser::isUIntNumber("0x3"));
     EXPECT_FALSE(StringParser::isUIntNumber("0x13d"));
+}
+
+TEST(StringParserTest, IsFloatNumber) {
+    EXPECT_TRUE(StringParser::isFloatNumber("234"));
+    EXPECT_TRUE(StringParser::isFloatNumber("343"));
+    EXPECT_TRUE(StringParser::isFloatNumber("0.0"));
+    EXPECT_TRUE(StringParser::isFloatNumber("1021.467"));
+    EXPECT_TRUE(StringParser::isFloatNumber("1021.569876"));
+    EXPECT_TRUE(StringParser::isFloatNumber("1021.560"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-231.0"));
+    EXPECT_TRUE(StringParser::isFloatNumber(".130"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-.130"));
+
+    EXPECT_TRUE(StringParser::isFloatNumber("2147483647")); // INT_MAX
+    EXPECT_TRUE(StringParser::isFloatNumber("2147483648"));
+    EXPECT_TRUE(StringParser::isFloatNumber("21474836472147483647214748364721474836472147483647"));
+    EXPECT_TRUE(StringParser::isFloatNumber("927598716587615618751577126487326536578264247"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483649"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483649."));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483649.0"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483649.000001"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483649.3523525252187"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483647214748364721474.8364721474836472147483647"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-214748364721474836472147434578965896518565647101.0"));
+    EXPECT_TRUE(StringParser::isFloatNumber("-2147483647214748364721474.8364721474836472147483647"));
+
+    EXPECT_FALSE(StringParser::isFloatNumber("3423dfa3"));
+    EXPECT_FALSE(StringParser::isFloatNumber("3423 3"));
+    EXPECT_FALSE(StringParser::isFloatNumber("3423_3"));
+    EXPECT_FALSE(StringParser::isFloatNumber("879_0"));
+    EXPECT_FALSE(StringParser::isFloatNumber("879e0"));
+    EXPECT_FALSE(StringParser::isFloatNumber("3423..3"));
+    EXPECT_FALSE(StringParser::isFloatNumber("--4612767"));
+    EXPECT_FALSE(StringParser::isFloatNumber("-4612-767"));
+    EXPECT_FALSE(StringParser::isFloatNumber("-4612.-767"));
+    EXPECT_FALSE(StringParser::isFloatNumber("4612767198659126571a"));
+    EXPECT_FALSE(StringParser::isFloatNumber("asd"));
+    EXPECT_FALSE(StringParser::isFloatNumber(""));
+    EXPECT_FALSE(StringParser::isFloatNumber(" "));
+    EXPECT_FALSE(StringParser::isFloatNumber("    "));
+    EXPECT_FALSE(StringParser::isFloatNumber("  3  "));
+    EXPECT_FALSE(StringParser::isFloatNumber("   3d "));
+    EXPECT_FALSE(StringParser::isFloatNumber("0x3"));
+    EXPECT_FALSE(StringParser::isFloatNumber("0x13d"));
 }
 
 TEST(StringParserTest, IsInt32) {
@@ -108,16 +156,21 @@ TEST(StringParserTest, IsFloat) {
     EXPECT_TRUE(StringParser::isFloat("-1052.0"));
     EXPECT_TRUE(StringParser::isFloat("-89152.023421"));
     EXPECT_TRUE(StringParser::isFloat("3.43"));
+    EXPECT_TRUE(StringParser::isFloat(".130"));
+    EXPECT_TRUE(StringParser::isFloat("-.130"));
 
     EXPECT_FALSE(StringParser::isFloat("asd"));
     EXPECT_TRUE(StringParser::isFloat("343"));
 
-    EXPECT_TRUE(StringParser::isFloat("2147483647")); // FLOAT_MAX
-    EXPECT_TRUE(StringParser::isFloat("-2147483648")); // FLOAT_MIN
+    EXPECT_TRUE(StringParser::isFloat("2147483647"));
+    EXPECT_TRUE(StringParser::isFloat("-2147483648"));
+    EXPECT_TRUE(StringParser::isFloat("-2147483665387453465745835634867261872.343468276478126481764"));
 
-    // TODO: these are bugs, this should be EXPECT_FALSE
     EXPECT_FALSE(StringParser::isFloat("3423dfa3"));
     EXPECT_FALSE(StringParser::isFloat("3423 3"));
+    EXPECT_FALSE(StringParser::isFloat("3423_3"));
+    EXPECT_FALSE(StringParser::isFloat("879_0"));
+    EXPECT_FALSE(StringParser::isFloat("879e0"));
     EXPECT_FALSE(StringParser::isFloat("3423..3"));
 }
 
@@ -128,7 +181,9 @@ TEST(StringParserTest, ParseFloat) {
     EXPECT_EQ(StringParser::parseFloat("-130.0021"), -130.0021f);
     EXPECT_EQ(StringParser::parseFloat("2147483647"), (float)INT_MAX);
     EXPECT_EQ(StringParser::parseFloat("-2147483648"), (float)INT_MIN);
-    // TODO: this is a bug, but it may be okayish, as we dont exatly know what to parse for a bad string
+    EXPECT_EQ(StringParser::parseFloat("-.130"), -0.13f);
+    EXPECT_EQ(StringParser::parseFloat("-2147483665387453465745835634867261872.343468276478126481764"), -2147483665387453465745835634867261872.343468276478126481764f);
+    // For now we dont care what it parses when the string is not a valid float
     EXPECT_EQ(StringParser::parseFloat("3423.dfa3"), 3423.0f);
     EXPECT_EQ(StringParser::parseFloat("189.23..3"), 189.23f);
 }

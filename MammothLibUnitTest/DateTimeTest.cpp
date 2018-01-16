@@ -37,7 +37,7 @@ TEST(DateTimeTest, IsValid) {
     EXPECT_TRUE(DateTime::isValid("0-1-1 0:0:0"));
 
     EXPECT_FALSE(DateTime::isValid("ABBA-2-18 0:32:49"));
-    EXPECT_FALSE(DateTime::isValid("23ABBA11-2-18 0:32:49")); // sigh
+    EXPECT_FALSE(DateTime::isValid("23ABBA11-2-18 0:32:49"));
     EXPECT_FALSE(DateTime::isValid("74612784562371461284687-2-18 0:32:49"));
     EXPECT_FALSE(DateTime::isValid("-10-1-1 0:0:0"));
 }

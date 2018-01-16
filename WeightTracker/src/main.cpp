@@ -54,6 +54,11 @@ public:
         }
     }
 
+    void addWeight(const WeightFileLine& w)
+    {
+        m_weights.push_back(w);
+    }
+
     std::vector<WeightFileLine>& getWeights()
     {
         return m_weights;
@@ -100,6 +105,10 @@ int main(char argc, char* argv)
 
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
+
+
+    int year = 2018, month = 1, day = 16, hour = 19, minute = 2, sec = 21;
+    float newWeight = 90.0f;
     
     // Set initial weight file, and load it in. 
     // TODO: This will be replaced by loading in the last saved file path
@@ -161,6 +170,48 @@ int main(char argc, char* argv)
                 weights = weightsFile.getWeights();
                 loadInterpolatedWeightsData(weights, interpolatedWeights);
                 loadTableText(interpolatedWeights, interpolatedTexts);
+            }
+            
+            {
+                ImGui::BeginGroup();
+                ImGui::PushID("DatePicker");
+
+                const float w_items_all = ImGui::CalcItemWidth();
+                const int32 components = 6;
+                const float innerSpacingW = 10.0f;
+                const float w_item_one = std::max(1.0f, (float)(int)((w_items_all - innerSpacingW * (components - 1)) / (float)components));
+                ImGui::PushItemWidth(60.0f);
+                
+                ImGui::DragInt("##Year", &year, 1.0f, 0, 3000);
+                ImGui::SameLine();
+                ImGui::DragInt("##Month", &month, 1.0f, 1, 12);
+                ImGui::SameLine();
+                ImGui::DragInt("-##Day", &day, 1.0f, 1, 31);
+                ImGui::SameLine();
+                ImGui::DragInt("##Hour", &hour, 1.0f, 0, 23);
+                ImGui::SameLine();
+                ImGui::DragInt("##Minute", &minute, 1.0f, 0, 59);
+                ImGui::SameLine();
+                ImGui::DragInt("##Sec", &sec, 1.0f, 0, 59);
+
+                ImGui::SameLine();
+                ImGui::PopItemWidth();
+                ImGui::PushItemWidth(120.0f);
+                ImGui::InputFloat("kg Weight", &newWeight, 0.1f, 0.01f, 1);
+
+                if(ImGui::Button("Save"))
+                {
+                    DateTime date = DateTime(year, month, day, hour, minute, sec);
+                    weightsFile.addWeight(WeightFileLine(date, newWeight));
+                    weights = weightsFile.getWeights();
+                    loadInterpolatedWeightsData(weights, interpolatedWeights);
+                    loadTableText(interpolatedWeights, interpolatedTexts);
+                }
+
+                ImGui::PopItemWidth();
+
+                ImGui::PopID();
+                ImGui::EndGroup();
             }
             ImGui::PlotLines("##Weights", reinterpret_cast<float*>(weights.data()), weights.size(), 0, "Weights", 60.0f, 120.0f, ImVec2(0,200), sizeof(WeightFileLine));
             

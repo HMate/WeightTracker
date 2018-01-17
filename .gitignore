@@ -306,3 +306,4 @@ $RECYCLE.BIN/
 # ===================
 
 WeightTracker/Locals.props
+*.wts

@@ -27,3 +27,12 @@ TEST(StringFormatterTest, FormatUsage) {
     EXPECT_EQ(StringFormatter::format("Hello %%s %%s%s%%s %%s", "lucky", "star", 33), "Hello %s %slucky%s %s");
     EXPECT_EQ(StringFormatter::format("Hello %%s", "s", "oy"), "Hello %s");
 }
+
+TEST(StringFormatterTest, FloatRound) {
+    EXPECT_EQ(StringFormatter::roundFloat(3.12f, 1), "3.1");
+    EXPECT_EQ(StringFormatter::roundFloat(3.02f, 1), "3.0");
+    EXPECT_EQ(StringFormatter::roundFloat(3.12252f, 3), "3.123");
+    EXPECT_EQ(StringFormatter::roundFloat(3.f, 3), "3.000");
+    EXPECT_EQ(StringFormatter::roundFloat(3.f, 0), "3");
+}
+

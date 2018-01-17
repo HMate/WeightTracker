@@ -22,7 +22,7 @@ struct WeightFileLine
     WeightFileLine(DateTime date, float weight) : m_date(date), m_weight(weight) {}
     std::string toString()
     {
-        return StringFormatter::format("%s %s", m_date.toString(), m_weight);
+        return StringFormatter::format("%s %s", m_date.toString(), StringFormatter::roundFloat(m_weight, 1));
     }
 };
 
@@ -60,7 +60,7 @@ public:
         weightFile.writeLine("Date,Weight");
         for(auto& w : m_weights)
         {
-            std::string line = StringFormatter::format("%s,%s", w.m_date.toString(), w.m_weight);
+            std::string line = StringFormatter::format("%s,%s", w.m_date.toString(), StringFormatter::roundFloat(w.m_weight, 1));
             weightFile.writeLine(line);
         }
         weightFile.saveFile(weightFilePath);

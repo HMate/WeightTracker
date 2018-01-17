@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <sstream>
 #include <vector>
 #include "types.h"
 
@@ -118,6 +119,15 @@ public:
     {
         return _format<T...>(formatString, pargs...);
         
+    }
+
+    static std::string roundFloat(const float toRound, const int32 decimals)
+    {
+        std::stringstream result;
+        result << std::fixed;
+        result.precision(decimals);
+        result << toRound;
+        return result.str();
     }
 };
 

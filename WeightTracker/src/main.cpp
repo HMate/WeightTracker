@@ -54,9 +54,16 @@ public:
         }
     }
 
-    void save()
+    void save(const std::string& weightFilePath)
     {
-
+        File weightFile;
+        weightFile.writeLine("Date,Weight");
+        for(auto& w : m_weights)
+        {
+            std::string line = StringFormatter::format("%s,%s", w.m_date.toString(), w.m_weight);
+            weightFile.writeLine(line);
+        }
+        weightFile.saveFile(weightFilePath);
     }
 
     void addWeight(const WeightFileLine& w)
@@ -128,7 +135,7 @@ public:
         }
     }
 
-    void setFilePath(std::string newFilePath)
+    void setFilePath(const std::string& newFilePath)
     {
         m_lastLoadedFilePath = newFilePath;
         saveFile();
@@ -167,6 +174,7 @@ int main(char argc, char* argv)
 
     WeightFile weightsFile;
     weightsFile.loadWeightFile(weightFilePath);
+    bool justLoaded = true;
     
     auto& weights = weightsFile.getWeights();
     std::vector<WeightFileLine> interpolatedWeights;
@@ -220,6 +228,7 @@ int main(char argc, char* argv)
             ImGui::SameLine();
             if(ImGui::Button("Load file"))
             {
+                justLoaded = true;
                 weightFilePath = newPath;
                 weightsFile.loadWeightFile(weightFilePath);
                 weights = weightsFile.getWeights();
@@ -232,19 +241,19 @@ int main(char argc, char* argv)
                 ImGui::BeginGroup();
                 ImGui::PushID("DatePicker");
 
-                ImGui::PushItemWidth(60.0f);
+                ImGui::PushItemWidth(90.0f);
                 
-                ImGui::DragInt("##Year", &year, 1.0f, 0, 3000);
+                ImGui::InputInt("##Year", &year, 1);
                 ImGui::SameLine();
-                ImGui::DragInt("##Month", &month, 1.0f, 1, 12);
+                ImGui::InputInt("##Month", &month, 1);
                 ImGui::SameLine();
-                ImGui::DragInt("-##Day", &day, 1.0f, 1, 31);
+                ImGui::InputInt("-##Day", &day, 1);
                 ImGui::SameLine();
-                ImGui::DragInt("##Hour", &hour, 1.0f, 0, 23);
+                ImGui::InputInt("##Hour", &hour, 1);
                 ImGui::SameLine();
-                ImGui::DragInt("##Minute", &minute, 1.0f, 0, 59);
+                ImGui::InputInt("##Minute", &minute, 1);
                 ImGui::SameLine();
-                ImGui::DragInt("##Sec", &sec, 1.0f, 0, 59);
+                ImGui::InputInt("##Sec", &sec, 1);
 
                 ImGui::SameLine();
                 ImGui::PopItemWidth();
@@ -259,7 +268,7 @@ int main(char argc, char* argv)
                     loadInterpolatedWeightsData(weights, interpolatedWeights);
                     loadTableText(interpolatedWeights, interpolatedTexts);
 
-                    weightsFile.save();
+                    weightsFile.save(weightFilePath);
                 }
 
                 ImGui::PopItemWidth();
@@ -276,8 +285,11 @@ int main(char argc, char* argv)
             {
                 ImGui::Text(s.c_str());
             }
+            if(justLoaded)
+                ImGui::SetScrollPosHere();
             ImGui::EndChild();
 
+            justLoaded = false;
         }
         ImGui::End();
     

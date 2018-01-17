@@ -5,8 +5,8 @@
 
 class File
 {
-    std::string m_contents;
-    int64 m_pos;
+    std::string m_contents = "";
+    int64 m_pos = 0;
 
 public:
     File();
@@ -20,7 +20,7 @@ public:
     // Clear the contents of this file.
     void clear();
     std::string readLine();
-    void writeLine(std::string line);
+    void writeLine(const std::string& line);
     bool isEndOfFile();
 
 };

@@ -11,7 +11,7 @@
 
 #include <iterator>
 
-File::File() : m_contents("")
+File::File()
 {
 }
 
@@ -60,7 +60,7 @@ std::string File::readLine()
     return line;
 }
 
-void File::writeLine(std::string line)
+void File::writeLine(const std::string& line)
 {
     m_contents += line + "\n";
 }

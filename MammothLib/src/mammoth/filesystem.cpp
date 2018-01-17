@@ -1,5 +1,13 @@
 #include "filesystem.h"
 
+#include <stdio.h>  /* defines FILENAME_MAX */
+#ifdef PLATFORM_WINDOWS
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
 
 #include <iterator>
 
@@ -13,10 +21,24 @@ File::~File()
 
 void File::loadFile(const std::string& filePath)
 {
-    std::fstream file(filePath);
+    std::ifstream file(filePath);
     m_pos = 0;
     m_contents = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
     file.close();
+}
+
+void File::saveFile(const std::string& filePath)
+{
+    std::ofstream file(filePath, std::ofstream::out | std::ofstream::trunc);
+    std::ostreambuf_iterator<char> it(file);
+    std::copy(m_contents.begin(), m_contents.end(), it);
+    file.close();
+}
+
+void File::clear()
+{
+    m_pos = 0;
+    m_contents.clear();
 }
 
 std::string File::readLine()
@@ -36,6 +58,11 @@ std::string File::readLine()
        m_pos = nlpos + 1;
     }
     return line;
+}
+
+void File::writeLine(std::string line)
+{
+    m_contents += line + "\n";
 }
 
 bool File::isEndOfFile()

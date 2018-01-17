@@ -54,6 +54,11 @@ public:
         }
     }
 
+    void save()
+    {
+
+    }
+
     void addWeight(const WeightFileLine& w)
     {
         m_weights.push_back(w);
@@ -70,6 +75,10 @@ public:
 void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std::vector<WeightFileLine>& interpolatedWeights)
 {
     interpolatedWeights.clear();
+    if(weights.size() <= 0)
+    {
+        return;
+    }
     WeightFileLine prevLine = WeightFileLine(weights[0].m_date, 0.0f);
     for(auto w : weights)
     {
@@ -91,11 +100,53 @@ void loadInterpolatedWeightsData(const std::vector<WeightFileLine>& weights, std
 void loadTableText(std::vector<WeightFileLine>& interpolatedWeights, std::vector<std::string>& interpolatedTexts)
 {
     interpolatedTexts.clear();
-    for(int32 i = 0; i < interpolatedWeights.size(); i++)
+    for(size_t i = 0; i < interpolatedWeights.size(); i++)
     {
         interpolatedTexts.push_back(StringFormatter::format("%s - %s", i, WeightFileLine(interpolatedWeights[i].m_date, interpolatedWeights[i].m_weight).toString()));
     }
 }
+
+class CacheFile
+{
+    // Change version if structure of cache file is modified.
+    const int32 m_version = 1;
+
+    std::string m_path;
+    File m_file;
+    std::string m_lastLoadedFilePath;
+public:
+    CacheFile()
+    {
+        m_path = FileSystem::getCurrentWorkingDirectory() + "\\wtstate.wts";
+        m_file.loadFile(m_path);
+        
+        auto line = m_file.readLine();
+        if(StringParser::isInt32(line))
+        {
+            int32 version = StringParser::parseInt32(line);
+            m_lastLoadedFilePath = m_file.readLine();
+        }
+    }
+
+    void setFilePath(std::string newFilePath)
+    {
+        m_lastLoadedFilePath = newFilePath;
+        saveFile();
+    }
+
+    std::string getFilePath()
+    {
+        return m_lastLoadedFilePath;
+    }
+
+    void saveFile()
+    {
+        m_file.clear();
+        m_file.writeLine(std::to_string(m_version));
+        m_file.writeLine(m_lastLoadedFilePath);
+        m_file.saveFile(m_path);
+    }
+};
 
 int main(char argc, char* argv)
 {
@@ -110,11 +161,10 @@ int main(char argc, char* argv)
     int year = 2018, month = 1, day = 16, hour = 19, minute = 2, sec = 21;
     float newWeight = 90.0f;
     
-    // Set initial weight file, and load it in. 
-    // TODO: This will be replaced by loading in the last saved file path
-    char weightFilePath[2048] = "";
-    FileSystem::getCurrentWorkingDirectory().copy(weightFilePath, 2048);
-    strcat_s(weightFilePath, "\\weights.dtr");
+    // Set initial weight file from save, and load it in. 
+    CacheFile cacheFile;
+    std::string weightFilePath = cacheFile.getFilePath();
+
     WeightFile weightsFile;
     weightsFile.loadWeightFile(weightFilePath);
     
@@ -162,24 +212,26 @@ int main(char argc, char* argv)
         {
             ImGui::SetWindowPos(ImVec2(windowPadding, editorHeight + windowPadding));
             ImGui::SetWindowSize(ImVec2(window.getSize().x - 2.0f*windowPadding, window.getSize().y - editorHeight - 2.0f*windowPadding));
-            ImGui::InputText("Input file", weightFilePath, 2048);
+
+            const int32 pathLength = 2048;
+            char newPath[pathLength] = {0};
+            weightFilePath.copy(newPath, weightFilePath.size());
+            ImGui::InputText("Input file", newPath, pathLength);
             ImGui::SameLine();
             if(ImGui::Button("Load file"))
             {
+                weightFilePath = newPath;
                 weightsFile.loadWeightFile(weightFilePath);
                 weights = weightsFile.getWeights();
                 loadInterpolatedWeightsData(weights, interpolatedWeights);
                 loadTableText(interpolatedWeights, interpolatedTexts);
+                cacheFile.setFilePath(weightFilePath);
             }
             
             {
                 ImGui::BeginGroup();
                 ImGui::PushID("DatePicker");
 
-                const float w_items_all = ImGui::CalcItemWidth();
-                const int32 components = 6;
-                const float innerSpacingW = 10.0f;
-                const float w_item_one = std::max(1.0f, (float)(int)((w_items_all - innerSpacingW * (components - 1)) / (float)components));
                 ImGui::PushItemWidth(60.0f);
                 
                 ImGui::DragInt("##Year", &year, 1.0f, 0, 3000);
@@ -206,6 +258,8 @@ int main(char argc, char* argv)
                     weights = weightsFile.getWeights();
                     loadInterpolatedWeightsData(weights, interpolatedWeights);
                     loadTableText(interpolatedWeights, interpolatedTexts);
+
+                    weightsFile.save();
                 }
 
                 ImGui::PopItemWidth();

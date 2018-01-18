@@ -164,8 +164,13 @@ int main(char argc, char* argv)
     sf::Color bgColor;
     float color[3] = {0.0f, 0.0f, 0.0f};
 
-
-    int year = 2018, month = 1, day = 16, hour = 19, minute = 2, sec = 21;
+    DateTime now = DateTime::Now();
+    int year = now.getYear();
+    int month = now.getMonth();
+    int day = now.getDay();
+    int hour = now.getHour();
+    int minute = now.getMinute();
+    int sec = now.getSecond();
     float newWeight = 90.0f;
     
     // Set initial weight file from save, and load it in. 

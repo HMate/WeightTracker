@@ -1,5 +1,6 @@
 #include "datetime.h"
 
+#include <ctime>
 #include "logger.h"
 
 
@@ -14,6 +15,13 @@ TimeSpan TimeSpan::Day(int32 count)
     return TimeSpan(count);
 }
 
+DateTime DateTime::Now()
+{
+    int64 timesec;
+    time(&timesec);
+    // epoch is 1970-1-1 0:0:0, but this implementation isnt precise, so adjust it accordingly
+    return DateTime(1969, 12, 20, 0, 0, 0, timesec*1000000);
+}
 
 // TODO: implement format string if needed, should conform to http://www.cplusplus.com/reference/ctime/strftime/
 DateTime::DateTime(const String& dateString/*, std::string format = "%F %T"*/)
@@ -21,9 +29,9 @@ DateTime::DateTime(const String& dateString/*, std::string format = "%F %T"*/)
     parseDate(dateString);
 }
 
-DateTime::DateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 mseconds)
+DateTime::DateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 microseconds)
 {
-    setDateTime(year, month, day, hours, minutes, seconds, mseconds);
+    setDateTime(year, month, day, hours, minutes, seconds, microseconds);
 }
 
 bool DateTime::isValid(const String& dateString)
@@ -102,11 +110,11 @@ void DateTime::parseDate(const String& dateString/*, std::string format = "%F %T
     }
 }
 
-void DateTime::setDateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 mseconds)
+void DateTime::setDateTime(int32 year, uint32 month, uint32 day, uint32 hours, uint32 minutes, uint32 seconds, int64 microseconds)
 {
     int64 overflow = 0;
-    m_msecond = mseconds % 1000000;
-    overflow = mseconds / 1000000;
+    m_msecond = microseconds % 1000000;
+    overflow = microseconds / 1000000;
     m_second = (seconds + overflow) % 60;
     overflow = (seconds + overflow) / 60;
     m_minute = (minutes + overflow) % 60;

@@ -38,12 +38,13 @@ class DateTime
     uint64 m_packed;
 public:
     DateTime(const String& dateString/*, std::string format = "%F %T"*/);
-    DateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 mseconds = 0);
+    DateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 microseconds = 0);
     
     void parseDate(const String& dateString/*, std::string format = "%F %T"*/);
     static bool isValid(const String& dateString);
+    static DateTime Now();
 
-    void setDateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 mseconds = 0);
+    void setDateTime(int32 year = 0, uint32 month = 1, uint32 day = 1, uint32 hours = 0, uint32 minutes = 0, uint32 seconds = 0, int64 microseconds = 0);
     std::string toString(/*TODO: param as format*/) const;
     int32 getYear() const;
     int32 getMonth() const;

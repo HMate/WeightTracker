@@ -179,6 +179,9 @@ int main(char argc, char* argv)
 
     WeightFile weightsFile;
     weightsFile.loadWeightFile(weightFilePath);
+    const int32 pathLength = 2048;
+    char newPath[pathLength] = {0};
+    weightFilePath.copy(newPath, weightFilePath.size());
     bool justLoaded = true;
     
     auto& weights = weightsFile.getWeights();
@@ -226,9 +229,6 @@ int main(char argc, char* argv)
             ImGui::SetWindowPos(ImVec2(windowPadding, editorHeight + windowPadding));
             ImGui::SetWindowSize(ImVec2(window.getSize().x - 2.0f*windowPadding, window.getSize().y - editorHeight - 2.0f*windowPadding));
 
-            const int32 pathLength = 2048;
-            char newPath[pathLength] = {0};
-            weightFilePath.copy(newPath, weightFilePath.size());
             ImGui::InputText("Input file", newPath, pathLength);
             ImGui::SameLine();
             if(ImGui::Button("Load file"))
